@@ -20,10 +20,14 @@
 
 .Form {
   width: 33%;
-  height: 33%;
+  height: 80%;
 }
 
 .Line-Graph {
   width: 60%;
   height: 60%;
+}
+
+.pad-btn {
+  margin-left: 1rem;
 }
