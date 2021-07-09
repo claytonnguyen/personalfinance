@@ -1,16 +1,49 @@
 import React, {useState, useEffect } from 'react';
 import './App.css';
 import { Line } from 'react-chartjs-2';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import Button from 'react-bootstrap/Button';
 
-function compoundInterest(initial, months, rate) {
+function compoundInterest(initial, years, rate, contribution, contributionTime, annual) {
   const results = [];
   var total = initial;
   var interest = 0;
   results.push(total);
-  for (let i = 0; i < months; i++) {
-    interest = total * rate;
-    total += interest;
-    results.push(total);
+  if (annual) {
+    if (contributionTime) {
+      for (let i = 0; i < years; i++) {
+        interest = total * rate;
+        {console.log(total)}
+        total += contribution;
+        {console.log(total)}
+        total += interest;
+        {console.log(total)}
+        results.push(total);
+      }
+    } else {
+      for (let i = 0; i < years; i++) {
+        interest = total * rate;
+        total += contribution * 12;
+        total += interest;
+        results.push(total);
+      }
+    }
+  } else {
+    if (contributionTime) {
+      for (let i = 0; i < years * 12; i++) {
+        interest = total * rate;
+        total += contribution / 12;
+        total += interest;
+        results.push(total);
+      }
+    } else {
+      for (let i = 0; i < years * 12; i++) {
+        interest = total * rate;
+        total += contribution;
+        total += interest;
+        results.push(total);
+      }
+    }
   }
   return results;
 }
@@ -31,18 +64,21 @@ function App() {
   const [state, setState] = useState();
 
   const [initial, setInitial] = useState(0);
-  const [months, setMonths] = useState(0);
+  const [years, setYears] = useState(0);
   const [rate, setRate] = useState(0);
-  const [annual, setAnnual] = useState("hi");
+  const [contribution, setContribution] = useState(0);
+  const [annual, setAnnual] = useState(true);
+  const [contributionTime, setContributionTime] = useState(true);
 
+  
   useEffect(() => {
-    stats = compoundInterest(initial, months, rate);
+    stats = compoundInterest(initial, years, rate, contribution, contributionTime, annual);
     let count = labelArray(stats);
     let data = {
       labels: count,
       datasets: [
         {
-          label: 'Compound Interest',
+          label: 'Principal +  Interest',
           fill: false,
           lineTension: 0.5,
           backgroundColor: 'rgba(75,192,192,1)',
@@ -53,21 +89,26 @@ function App() {
       ]
     }
     setState(data);
-  }, [initial, months, rate]);
+  }, [initial, years, rate, contribution, contributionTime, annual]);
 
   return (
     <div className="App">
       <div className="Dashboard">
         <div className="Form">
+          {console.log(annual)}
           <div>
             <label htmlFor="initial">Initial Deposit: {initial} </label>
             <input type="text" name="initial" onChange={(e) => setInitial(Number(e.target.value))} ></input>
-            <label htmlFor="months">Months Invested: {months} </label>
-            <input type="text" name="months" onChange={(e) => setMonths(Number(e.target.value))} ></input>
+            <label htmlFor="contribution">Contribution: {contribution} </label>
+            <input type="text" name="contribution" onChange={(e) => setContribution(Number(e.target.value))} ></input>
+            <label htmlFor="contributionTime">Contribute: {contributionTime ? 'Annually' : 'Monthly'} </label>
+            <Button type="button" class="btn btn-primary" onClick={() => setContributionTime(current => !current)} >Change</Button>
+            <label htmlFor="years">Years Invested: {years} </label>
+            <input type="text" name="years" onChange={(e) => setYears(Number(e.target.value))} ></input>
             <label htmlFor="rate">Investment rate: {rate} </label>
             <input type="text" name="rate" onChange={(e) => setRate(Number(e.target.value))} ></input>
-            <label htmlFor="annual">Compounded: {annual} </label>
-            <input type="text" name="annual" onChange={(e) => setAnnual(e.target.value)} ></input>
+            <label htmlFor="annual">Compounded: {annual ? 'Annually' : 'Monthly'} </label>
+            <Button type="button" class="btn btn-primary" onClick={() => setAnnual(current => !current)} >Change</Button>
           </div>
         </div>
         <div className="Line-Graph">
