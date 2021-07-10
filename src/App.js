@@ -1,11 +1,12 @@
 import React, {useState, useEffect } from 'react';
 import './App.css';
+import Tax from './Tax';
 import { Line } from 'react-chartjs-2';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import ListGroup from 'react-bootstrap/ListGroup';
-// import ListGroup from 'react-bootstrap/ListGroup';
+import Navbar from 'react-bootstrap/Navbar';
 
 function compoundInterest(initial, years, rate, contribution, contributionTime, annual) {
   const results = [];
@@ -95,44 +96,45 @@ function App() {
   }, [initial, years, rate, contribution, contributionTime, annual]);
 
   return (
+    <>
+    <Navbar bg="dark" variant="dark" >
+      <Navbar.Brand href="#home" >
+        <img
+          alt=""
+          src="/logo.jpg"
+          width="30"
+          height="30"
+          className="d-inline-block align-top"
+        />{' '}
+        Personal Finance
+      </Navbar.Brand>
+    </Navbar>
     <div className="App">
       <div className="Dashboard">
         <div className="Form">
           {console.log(annual)}
           <Card style={{ width: '25rem' }}>
             <ListGroup variant="flush">
-              <ListGroup.Item><label htmlFor="initial">Initial Deposit: {initial} </label></ListGroup.Item>
-              <ListGroup.Item><input type="text" name="initial" onChange={(e) => setInitial(Number(e.target.value))} ></input></ListGroup.Item>
-              <ListGroup.Item><label htmlFor="contribution">Contribution: {contribution} </label></ListGroup.Item>
-              <ListGroup.Item><input type="text" name="contribution" onChange={(e) => setContribution(Number(e.target.value))} ></input></ListGroup.Item>
+              <ListGroup.Item><label htmlFor="initial">Initial Deposit: ${initial} </label></ListGroup.Item>
+              <ListGroup.Item><input type="text" name="initial" placeholder="10000, etc" onChange={(e) => setInitial(Number(e.target.value))} ></input></ListGroup.Item>
+              <ListGroup.Item><label htmlFor="contribution">Contribution: ${contribution} </label></ListGroup.Item>
+              <ListGroup.Item><input type="text" name="contribution" placeholder="1000, etc" onChange={(e) => setContribution(Number(e.target.value))} ></input></ListGroup.Item>
               <ListGroup.Item><label htmlFor="contributionTime">Contribute: {contributionTime ? 'Annually' : 'Monthly'} </label>
-              <Button type="button" class="btn btn-primary pad-btn" onClick={() => setContributionTime(current => !current)} >Change</Button>
+              <Button type="button" className="btn btn-primary pad-btn" onClick={() => setContributionTime(current => !current)} >Change</Button>
               </ListGroup.Item>
-              <ListGroup.Item><label htmlFor="years">Years Invested: {years} </label></ListGroup.Item>
-              <ListGroup.Item><input type="text" name="years" onChange={(e) => setYears(Number(e.target.value))} ></input></ListGroup.Item>
-              <ListGroup.Item><label htmlFor="rate">Investment rate: {rate} </label></ListGroup.Item>
-              <ListGroup.Item><input type="text" name="rate" onChange={(e) => setRate(Number(e.target.value))} ></input></ListGroup.Item>
+              <ListGroup.Item><label htmlFor="years">Years Invested: {years} years</label></ListGroup.Item>
+              <ListGroup.Item><input type="text" name="years" placeholder="10, etc" onChange={(e) => setYears(Number(e.target.value))} ></input></ListGroup.Item>
+              <ListGroup.Item><label htmlFor="rate">Investment rate: {Math.round(rate * 100)}% </label></ListGroup.Item>
+              <ListGroup.Item><input type="text" name="rate" placeholder="0.07, etc" onChange={(e) => setRate(Number(e.target.value))} ></input></ListGroup.Item>
               <ListGroup.Item><label htmlFor="annual">Compounded: {annual ? 'Annually' : 'Monthly'} </label>
-              <Button type="button" class="btn btn-primary pad-btn" onClick={() => setAnnual(current => !current)} >Change</Button>
+              <Button type="button" className="btn btn-primary pad-btn" onClick={() => setAnnual(current => !current)} >Change</Button>
               </ListGroup.Item>
             </ListGroup>
           </Card>
-          {/* <div>
-            <label htmlFor="initial">Initial Deposit: {initial} </label>
-            <input type="text" name="initial" onChange={(e) => setInitial(Number(e.target.value))} ></input>
-            <label htmlFor="contribution">Contribution: {contribution} </label>
-            <input type="text" name="contribution" onChange={(e) => setContribution(Number(e.target.value))} ></input>
-            <label htmlFor="contributionTime">Contribute: {contributionTime ? 'Annually' : 'Monthly'} </label>
-            <Button type="button" class="btn btn-primary" onClick={() => setContributionTime(current => !current)} >Change</Button>
-            <label htmlFor="years">Years Invested: {years} </label>
-            <input type="text" name="years" onChange={(e) => setYears(Number(e.target.value))} ></input>
-            <label htmlFor="rate">Investment rate: {rate} </label>
-            <input type="text" name="rate" onChange={(e) => setRate(Number(e.target.value))} ></input>
-            <label htmlFor="annual">Compounded: {annual ? 'Annually' : 'Monthly'} </label>
-            <Button type="button" class="btn btn-primary" onClick={() => setAnnual(current => !current)} >Change</Button>
-          </div> */}
         </div> 
         <div className="Line-Graph">
+          <h1>Compound Interest Calculator</h1>
+          <br></br>
           <Line
             data={state}
             options={{
@@ -147,9 +149,14 @@ function App() {
               }
             }}
           />
+          <h5>{annual ? 'Years' : 'Months'}</h5>
         </div>
       </div>
+      <div className="capitalTax">
+        <Tax />
+      </div>
     </div>
+    </>
   );
 }
 
